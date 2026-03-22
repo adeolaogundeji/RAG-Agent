@@ -2,10 +2,11 @@ from openai import OpenAI
 from llama_index.readers.file import PDFReader
 from llama_index.core.node_parser import SentenceSplitter
 from dotenv import load_dotenv
+import os
 
 load_dotenv()
 
-client = OpenAI()
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 EMBED_MODEL = "text-embedding-3-large"
 EMBED_DIM = 3072
 
@@ -18,9 +19,24 @@ def load_and_chunk_pdf(path: str):
     for t in texts:
         chunks.extend(splitter.split_text(t))
     return chunks
-def embed_texts(texts: list[str]) -> list[list[float]]:
-    response = client.embeddings.create(
-        model=EMBED_MODEL,
-        input=texts,
-    )
-    return [item.embedding for item in response.data]
+def embed_texts(chunks):
+
+    print("DEBUG: embed_texts() called")
+    print("DEBUG: Number of inputs:", len(chunks))
+
+    try:
+        response = client.embeddings.create(
+            model="text-embedding-3-small",
+            input=chunks
+        )
+
+        vectors = [item.embedding for item in response.data]
+
+        print("DEBUG: Embeddings created:", len(vectors))
+
+        return vectors
+
+    except Exception as e:
+        print("DEBUG: Embedding error occurred")
+        print(e)
+        raise
