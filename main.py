@@ -105,4 +105,4 @@ async def rag_query_pdf_ai(ctx: inngest.Context):
     return {"answer": answer, "sources": found.sources, "num_contexts": len(found.contexts)}
 app = FastAPI()
 
-inngest.fast_api.serve(app, inngest_client, functions=[rag_ingest_pdf])
+inngest.fast_api.serve(app, inngest_client, functions=[rag_ingest_pdf, rag_query_pdf_ai])
