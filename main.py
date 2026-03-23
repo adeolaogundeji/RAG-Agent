@@ -75,7 +75,8 @@ async def rag_query_pdf_ai(ctx: inngest.Context):
     question = ctx.event.data["question"]
     top_k = int(ctx.event.data.get("top_k", 5))
 
-    found - await ctx.step.run("embed-and-search", lambda: _search(question, top_k), output_type=RAGSearchResult)
+    found = await ctx.step.run("embed-and-search", lambda: _search(question, top_k), output_type=RAGSearchResult)
+    print("DEBUG contexts:", found.contexts)
 
     context_block = "\n\n".join(f"- {c}" for c in found.contexts)
     user_content = (
